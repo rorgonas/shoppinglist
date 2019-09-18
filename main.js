@@ -2,7 +2,14 @@ const electron = require('electron');
 const url = require('url');
 const path = require('path');
 
-const {app, BrowserWindow, Menu, ipcMain} = electron;
+const {app, BrowserWindow, Menu, ipcMain, systemPreferences} = electron;
+
+// Set Env
+process.env.NODE_ENV = 'production';
+
+// Hide extra native sub menu items
+systemPreferences.setUserDefault('NSDisabledDictationMenuItem', 'boolean', true)
+systemPreferences.setUserDefault('NSDisabledCharacterPaletteMenuItem', 'boolean', true)
 
 let win;
 let addWindow;
@@ -68,14 +75,14 @@ const mainMenuTemplate = [
             {
                 label: 'Add item',
                 accelerator: process.platform === 'darwin' ? 'Command+A' : 'Ctrl+A',
-                click(){ createAddWindow();
+                click(){
+                    createAddWindow();
                 }},
-            { label: 'Clear item', click(){
-                win.webContents.send('item:clear')
-                } },
-            { type: 'separator' },
-            { role: 'about' },
-            { role: 'quit' }
+            {
+                label: 'Clear item', click(){
+                    win.webContents.send('item:clear')
+                }
+            }
         ]
     }
 ]
